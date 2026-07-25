@@ -139,6 +139,7 @@ jobs:
       - name: Aplicar ConfigMap
         run: |
           kubectl apply -f kubernetes/base/configmap.yaml
+          kubectl apply -f kubernetes/base/pvc.yaml
 
       - name: Actualizar imagen en el Deployment
         run: |
