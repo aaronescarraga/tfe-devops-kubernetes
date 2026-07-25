@@ -1,0 +1,38 @@
+# ============================================================
+# Backup manual bajo demanda del namespace tfe-devops
+# Usar antes de actualizaciones importantes o cambios criticos
+# ============================================================
+apiVersion: velero.io/v1
+kind: Backup
+metadata:
+  name: tfe-devops-manual-backup
+  namespace: velero
+  labels:
+    project: tfe-devops
+    backup-type: manual
+spec:
+  includedNamespaces:
+    - tfe-devops
+  includeClusterResources: true
+  storageLocation: default
+  volumeSnapshotLocations:
+    - default
+  # Retener este backup por 7 dias
+  ttl: 168h0m0s
+  hooks:
+    resources:
+      - name: pre-backup-hook
+        includedNamespaces:
+          - tfe-devops
+        labelSelector:
+          matchLabels:
+            app: api-service
+        pre:
+          - exec:
+              container: api-service
+              command:
+                - /bin/sh
+                - -c
+                - echo "Pre-backup hook ejecutado en $(date)"
+              onError: Continue
+              timeout: 30s

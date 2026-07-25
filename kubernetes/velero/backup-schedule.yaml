@@ -1,0 +1,55 @@
+# ============================================================
+# Backup programado del namespace completo con Velero
+# Se ejecuta cada hora y retiene los backups por 72 horas
+# ============================================================
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: tfe-devops-hourly-backup
+  namespace: velero
+  labels:
+    project: tfe-devops
+    backup-type: scheduled
+spec:
+  # Cada hora a los 0 minutos
+  schedule: "0 * * * *"
+  template:
+    includedNamespaces:
+      - tfe-devops
+    excludedResources:
+      - events
+      - events.events.k8s.io
+    includeClusterResources: true
+    storageLocation: default
+    volumeSnapshotLocations:
+      - default
+    ttl: 72h0m0s
+    labelSelector:
+      matchLabels:
+        project: tfe-devops
+---
+# Backup diario completo con mayor retencion
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: tfe-devops-daily-backup
+  namespace: velero
+  labels:
+    project: tfe-devops
+    backup-type: daily
+spec:
+  # Cada dia a las 2:00 AM
+  schedule: "0 2 * * *"
+  template:
+    includedNamespaces:
+      - tfe-devops
+    includeClusterResources: true
+    storageLocation: default
+    volumeSnapshotLocations:
+      - default
+    # Retener backups diarios por 30 dias
+    ttl: 720h0m0s
+    metadata:
+      labels:
+        backup-frequency: daily
+        project: tfe-devops

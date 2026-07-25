@@ -1,0 +1,23 @@
+apiVersion: v2
+name: tfe-devops
+description: |
+  Helm chart para el despliegue del ecosistema TFE DevOps UNIR.
+  Incluye el API Service con configuracion de autoescalado,
+  politicas de red y monitoreo integrado.
+
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+
+keywords:
+  - devops
+  - kubernetes
+  - microservices
+  - tfe
+  - unir
+
+maintainers:
+  - name: TFE DevOps UNIR
+    email: tfe-devops@unir.net
+
+dependencies: []

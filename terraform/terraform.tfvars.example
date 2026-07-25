@@ -1,0 +1,31 @@
+# ============================================================
+# ARCHIVO DE EJEMPLO — copiar como terraform.tfvars y completar
+# NUNCA subir terraform.tfvars al repositorio (esta en .gitignore)
+# ============================================================
+
+# ID del proyecto de Google Cloud (obligatorio)
+project_id = "tu-project-id-aqui"
+
+# Region y zona de GCP
+region = "us-central1"
+zone   = "us-central1-a"
+
+# Configuracion del cluster GKE
+cluster_name       = "tfe-devops-cluster"
+node_count         = 2
+machine_type       = "e2-medium"
+disk_size_gb       = 50
+kubernetes_version = "latest"
+
+# Configuracion de red
+network_name  = "tfe-devops-vpc"
+subnet_name   = "tfe-devops-subnet"
+subnet_cidr   = "10.0.0.0/24"
+pods_cidr     = "10.1.0.0/16"
+services_cidr = "10.2.0.0/16"
+
+# Bucket de backups Velero
+backup_bucket_name = "tfe-devops-velero-backups"
+
+# Entorno
+environment = "dev"

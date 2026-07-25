@@ -1,0 +1,33 @@
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/*.tfvars
+#terraform/.terraform.lock.hcl
+*.tfplan
+
+# Credenciales y claves (solo nombres específicos, no todos los .json)
+*.pem
+*.key
+gcp-key.json
+service-account*.json
+*-key.json
+credentials.json
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# Helm
+**/charts/*.tgz
+
+# Editor / OS
+.vscode/settings.json
+.DS_Store
+
+# Logs
+*.log
+terraform/iam.tf.backup

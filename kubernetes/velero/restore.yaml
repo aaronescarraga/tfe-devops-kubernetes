@@ -1,0 +1,48 @@
+# ============================================================
+# Restauracion del namespace tfe-devops desde un backup
+# INSTRUCCIONES DE USO:
+# 1. Identificar el backup: velero backup get
+# 2. Editar el campo backupName con el nombre correcto
+# 3. Aplicar: kubectl apply -f restore.yaml
+# 4. Monitorear: velero restore describe tfe-devops-restore
+# ============================================================
+apiVersion: velero.io/v1
+kind: Restore
+metadata:
+  name: tfe-devops-restore
+  namespace: velero
+  labels:
+    project: tfe-devops
+    restore-type: full
+spec:
+  # Reemplazar con el nombre del backup a restaurar
+  # Ejemplo: tfe-devops-hourly-backup-20240515120000
+  backupName: tfe-devops-manual-backup
+
+  includedNamespaces:
+    - tfe-devops
+
+  # No restaurar recursos que ya existen para evitar conflictos
+  existingResourcePolicy: none
+
+  # Restaurar volumenes persistentes
+  restorePVs: true
+
+  # No restaurar el estado del cluster (nodos, etc.)
+  includeClusterResources: false
+
+  # Hooks post-restauracion para verificar el estado
+  hooks:
+    resources:
+      - name: post-restore-check
+        includedNamespaces:
+          - tfe-devops
+        post:
+          - exec:
+              container: api-service
+              command:
+                - /bin/sh
+                - -c
+                - echo "Post-restore hook: servicio restaurado en $(date)"
+              onError: Continue
+              timeout: 60s

@@ -1,0 +1,44 @@
+replicaCount: 2
+
+image:
+  repository: DOCKER_USERNAME/tfe-api-service
+  pullPolicy: Always
+  tag: "latest"
+
+nameOverride: ""
+fullnameOverride: ""
+
+namespace: tfe-devops
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+ingress:
+  enabled: true
+  className: "gce"
+  annotations: {}
+
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "100m"
+  limits:
+    memory: "256Mi"
+    cpu: "500m"
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+env:
+  APP_ENV: production
+  LOG_LEVEL: INFO
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

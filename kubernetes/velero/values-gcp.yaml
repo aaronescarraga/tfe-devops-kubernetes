@@ -1,0 +1,33 @@
+# Configuracion de Velero para GKE usando Workload Identity (sin claves JSON)
+configuration:
+  backupStorageLocation:
+    - name: default
+      bucket: tfe-devops-velero-backups-project-b94ae20d-a05b-4291-835
+      provider: gcp
+      config:
+        serviceAccount: tfe-devops-velero@project-b94ae20d-a05b-4291-835.iam.gserviceaccount.com
+  volumeSnapshotLocation:
+    - name: default
+      provider: gcp
+      config:
+        project: project-b94ae20d-a05b-4291-835
+
+credentials:
+  useSecret: false
+
+serviceAccount:
+  server:
+    create: true
+    name: velero
+    annotations:
+      iam.gke.io/gcp-service-account: tfe-devops-velero@project-b94ae20d-a05b-4291-835.iam.gserviceaccount.com
+
+initContainers:
+  - name: velero-plugin-for-gcp
+    image: velero/velero-plugin-for-gcp:v1.10.0
+    imagePullPolicy: IfNotPresent
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
+
+deployNodeAgent: true
