@@ -104,6 +104,9 @@ jobs:
   deploy:
     name: Deploy en Kubernetes
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     needs: build
     # Solo en push a main
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -115,7 +118,8 @@ jobs:
       - name: Autenticar en Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
 
       - name: Configurar Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
@@ -175,6 +179,9 @@ jobs:
   backup:
     name: Backup Post-Despliegue
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     needs: deploy
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
@@ -185,7 +192,8 @@ jobs:
       - name: Autenticar en Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
 
       - name: Configurar Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
